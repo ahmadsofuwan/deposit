@@ -1,7 +1,15 @@
 $(document).ready(function () {
 
     var obj = $('#content');
-    obj.find('.format-number').val(0);
+    var formatNumber = obj.find('.format-number');
+    $.each(formatNumber, function (key, objFormatNumber) {
+        var valueNumber = $(objFormatNumber).val()
+        if (valueNumber == "") {
+            $(objFormatNumber).val(0)
+        }
+
+    });
+
     if (obj.find('[name=action]').val() !== 'update') {
         var table = obj.find('[name=addDetail]').closest('table');
         var tbody = table.find('tbody');
@@ -29,9 +37,12 @@ $(document).ready(function () {
         obj.find('.select2').select2();
     });
 
-    $('.select2').select2();
+    $('.select2').select2({
+        theme: 'bootstrap4',
+    });
 
     function formatnumber(number) {
+
 
         var number_string = number.toString(),
             sisa = number_string.length % 3,
@@ -41,7 +52,13 @@ $(document).ready(function () {
         if (ribuan) {
             separator = sisa ? ',' : '';
             rupiah += separator + ribuan.join(',');
-            return rupiah
+            if (number_string.length < 3) {
+                return number
+            } else {
+                return rupiah
+            }
+        } else {
+            return number
         }
     }
     obj.find('input').change(function (e) {
@@ -51,6 +68,7 @@ $(document).ready(function () {
         $.each(iObj, function (key, value) {
             var val = iObj[key].value.replace(/,/g, '')
 
+            console.log(formatnumber(parseInt(val)))
             iObj[key].value = formatnumber(parseInt(val))
             if (isNaN(val) || iObj[key].value == 'undefined')
                 iObj[key].value = 0;

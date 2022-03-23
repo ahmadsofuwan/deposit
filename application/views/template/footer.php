@@ -61,7 +61,7 @@
 <!-- Page level custom scripts -->
 <script src="<?= base_url('asset/sb_admin2/'); ?>js/demo/datatables-demo.js"></script>
 <script src="<?= base_url('asset/sb_admin2/'); ?>js/base.js"></script>
-<script src="<?= base_url('asset/admin/'); ?>js/base.js"></script>
+<script src="<?= base_url('asset/admin/'); ?>js/base.js" charset="utf-8"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {

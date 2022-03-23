@@ -32,7 +32,6 @@ class Admin extends MY_Controller
 		$formData = array(
 			'pkey' => 'pkey',
 			'name' => 'name',
-			'createon' => 'createon',
 		);
 		$formDetail = array();
 
@@ -48,11 +47,13 @@ class Admin extends MY_Controller
 			if (empty(count($arrMsgErr)))
 				switch ($_POST['action']) {
 					case 'add':
+						$formData['createon'] = 'sesionid';
 						$refkey = $this->insert($tableName, $this->dataForm($formData));
 						$this->insertDetail($tableDetail, $formDetail, $refkey);
 						redirect(base_url($baseUrl . 'List')); //wajib terakhir
 						break;
 					case 'update':
+						$formData['modifby'] = 'sesionid';
 						$this->update($tableName, $this->dataForm($formData), array('pkey' => $_POST['pkey']));
 						$this->updateDetail($tableDetail, $formDetail, $detailRef, $id);
 						redirect(base_url($baseUrl . 'List'));
@@ -71,6 +72,7 @@ class Admin extends MY_Controller
 		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
 		$this->template($data);
 	}
+
 	public function depositList()
 	{
 		$tableName = 'deposit';
@@ -82,6 +84,7 @@ class Admin extends MY_Controller
 		$data['url'] = 'admin/depositList';
 		$this->template($data);
 	}
+
 	public function deposit($id = '')
 	{
 		$tableName = 'deposit';
@@ -130,6 +133,85 @@ class Admin extends MY_Controller
 
 		$data['html']['baseUrl'] = $baseUrl;
 		$data['html']['title'] = 'Input Data ' . __FUNCTION__;
+		$data['html']['err'] = $this->genrateErr();
+		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
+		$this->template($data);
+	}
+
+	public function depositTransactionList()
+	{
+		$tableName = 'deposit_transaction';
+
+		$join = array(
+			array('deposit', 'deposit.pkey=' . $tableName . '.depositkey'),
+			array('customer', 'customer.pkey=' . $tableName . '.customerkey'),
+		);
+		$select = '
+			' . $tableName . '.*,
+			deposit.name as depositname,
+			customer.name as customername,
+		';
+
+		$dataList = $this->getDataRow($tableName, $select, '', '', $join);
+		$data['html']['title'] = 'List Deposit';
+		$data['html']['dataList'] = $dataList;
+		$data['html']['tableName'] = $tableName;
+		$data['html']['form'] = get_class($this) . '/depositTransaction';
+		$data['url'] = 'admin/depositTransactionList';
+		$this->template($data);
+	}
+
+	public function depositTransaction($id = '')
+	{
+		$tableName = 'deposit_transaction';
+		$tableDetail = '';
+		$baseUrl = get_class($this) . '/' . __FUNCTION__;
+		$detailRef = '';
+		$formData = array(
+			'pkey' => 'pkey',
+			'customerkey' => 'customerKey',
+			'createon' => 'createon',
+			'depositkey' => 'depositKey',
+			'calculate' => 'calculate',
+			'totalpoint' => 'point',
+			'note' => 'note',
+		);
+		$formDetail = array();
+
+		if ($_SERVER["REQUEST_METHOD"] == "POST") {
+			if (empty($_POST['action'])) redirect(base_url($baseUrl . 'List'));
+			//validate form
+			$arrMsgErr = array();
+			$point = $this->getDataRow('deposit', '*', array('pkey' => $_POST['depositKey']))[0]['point'];
+			$_POST['point'] = $point * str_replace(",", "", $_POST['calculate']);
+
+			$this->session->set_flashdata('arrMsgErr', $arrMsgErr);
+			//validate form
+			if (empty(count($arrMsgErr)))
+				switch ($_POST['action']) {
+					case 'add':
+						$refkey = $this->insert($tableName, $this->dataForm($formData));
+						$this->insertDetail($tableDetail, $formDetail, $refkey);
+						redirect(base_url($baseUrl . 'List')); //wajib terakhir
+						break;
+					case 'update':
+						$this->update($tableName, $this->dataForm($formData), array('pkey' => $_POST['pkey']));
+						$this->updateDetail($tableDetail, $formDetail, $detailRef, $id);
+						redirect(base_url($baseUrl . 'List'));
+						break;
+				}
+		}
+
+		if (!empty($id)) {
+			$dataRow = $this->getDataRow($tableName, '*', array('pkey' => $id), 1)[0];
+			$this->dataFormEdit($formData, $dataRow);
+		}
+		$selValDeposit = $this->getDataRow('deposit', '*', '', '', '', 'name ASC');
+		$selValCustomer = $this->getDataRow('customer', '*', '', '', '', 'name ASC');
+		$data['html']['selValCustomer'] = $selValCustomer;
+		$data['html']['selValDeposit'] = $selValDeposit;
+		$data['html']['baseUrl'] = $baseUrl;
+		$data['html']['title'] = 'Input Data Transaksi Deposit';
 		$data['html']['err'] = $this->genrateErr();
 		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
 		$this->template($data);
@@ -229,6 +311,10 @@ class Admin extends MY_Controller
 		switch ($_POST['action']) {
 			case 'delete':
 				$this->delete($_POST['tbl'], 'pkey=' . $_POST['pkey']);
+				break;
+			case 'getDeposit':
+				$data = $this->getDataRow('deposit', '*', array('pkey' => $_POST['pkey']));
+				echo json_encode($data);
 				break;
 			default:
 				echo 'action is not in the list';

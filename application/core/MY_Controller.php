@@ -6,6 +6,7 @@ class MY_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        date_default_timezone_set('Asia/Jakarta');
         $this->role = $this->session->userdata('role');
         $this->id = $this->session->userdata('id');
         $this->login = $this->session->userdata('login');
@@ -171,8 +172,10 @@ class MY_Controller extends CI_Controller
                 $_POST[$value[0]] = strtotime($_POST[$value[0]]);
                 $value = $value[0];
             }
-            if ($value == 'createon')
+            if ($value == 'sesionid')
                 $_POST[$value] = $this->id;
+            if ($value == 'time')
+                $_POST[$value] = strtotime("now");
 
 
             $data[$key] = $_POST[$value];

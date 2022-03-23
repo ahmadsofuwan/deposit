@@ -47,8 +47,6 @@ $role = $this->session->userdata('role');
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Input:</h6>
             <a class="collapse-item" href="<?= base_url('Admin/customerList') ?>">Palanggan</a>
-            <a class="collapse-item" href="<?= base_url('Admin/classList') ?>">Data Kelas</a>
-            <a class="collapse-item" href="<?= base_url('Admin/memoriList') ?>">Data Hafalan</a>
         </div>
     </div>
 </li>
