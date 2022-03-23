@@ -10,9 +10,7 @@ class MY_Controller extends CI_Controller
         $this->role = $this->session->userdata('role');
         $this->id = $this->session->userdata('id');
         $this->login = $this->session->userdata('login');
-        if (!$this->login) {
-            redirect(base_url('Auth'));
-        }
+        
     }
 
     public function template($data)

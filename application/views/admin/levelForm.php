@@ -24,6 +24,13 @@ if ($action == 'update')
 							</div>
 						</div>
 
+						<div class="form-group row">
+							<label for="rankPoint" class="col-sm-3 col-form-label">Minimum Point</label>
+							<div class="col-sm">
+								<input type="text" class="form-control format-number" id="rankPoint" name="rankPoint" placeholder="Minimum Point">
+							</div>
+						</div>
+
 						<div class="form-group row mt-5">
 							<div class="col-sm">
 								<button type="submit" class="btn btn-primary btn-block">Submit</button>

@@ -8,6 +8,8 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
+            <th scope="col">Point</th>
+            <th scope="col">Rank</th>
             <th scope="col" class="text-center">Action</th>
         </tr>
     </thead>
@@ -17,6 +19,8 @@
             <tr>
                 <th scope="row"><?php echo $i++ ?></th>
                 <td><?php echo $value['name'] ?></td>
+                <td><?php echo $value['temppoint'] ?></td>
+                <td><?php echo $value['levelname'] ?></td>
                 <td style="width: 140px;">
                     <a href="<?php echo base_url($form . '/' . $value['pkey']) ?>" class="btn btn-primary">Edit</a>
                     <button class="btn btn-danger" name="delete" data='<?php echo $tableName ?>' value="<?php echo $value['pkey'] ?>">Delete</button>

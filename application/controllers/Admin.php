@@ -6,6 +6,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Admin extends MY_Controller
 {
 
+	public function __construct()
+	{
+		parent::__construct();
+		if (!$this->login) {
+			redirect(base_url('Auth'));
+		}
+	}
 	public function index()
 	{
 		$data['html']['title'] = 'Dasboard';
@@ -15,7 +22,11 @@ class Admin extends MY_Controller
 	public function customerList()
 	{
 		$tableName = 'customer';
-		$dataList = $this->getDataRow($tableName, '* ,', '', '', '', 'name ASC');
+		$join = array(
+			array('level', 'level.pkey=' . $tableName . '.levelkey', 'left'),
+		);
+
+		$dataList = $this->getDataRow($tableName, $tableName . '.*,level.name as levelname', '', '', $join, 'name ASC');
 		$data['html']['title'] = 'List Customer';
 		$data['html']['dataList'] = $dataList;
 		$data['html']['tableName'] = $tableName;
@@ -47,13 +58,18 @@ class Admin extends MY_Controller
 			if (empty(count($arrMsgErr)))
 				switch ($_POST['action']) {
 					case 'add':
+						$defaultRank = $this->getDataRow('level', 'pkey', '', '', '', 'level.rankpoint ASC')[0]['pkey'];
+						$_POST['levelKey'] = $defaultRank;
+						$formData['levelkey'] = 'levelKey';
 						$formData['createon'] = 'sesionid';
+						$formData['createtimestamp'] = 'time';
 						$refkey = $this->insert($tableName, $this->dataForm($formData));
 						$this->insertDetail($tableDetail, $formDetail, $refkey);
 						redirect(base_url($baseUrl . 'List')); //wajib terakhir
 						break;
 					case 'update':
 						$formData['modifby'] = 'sesionid';
+						$formData['modiftimestamp'] = 'time';
 						$this->update($tableName, $this->dataForm($formData), array('pkey' => $_POST['pkey']));
 						$this->updateDetail($tableDetail, $formDetail, $detailRef, $id);
 						redirect(base_url($baseUrl . 'List'));
@@ -192,6 +208,17 @@ class Admin extends MY_Controller
 					case 'add':
 						$refkey = $this->insert($tableName, $this->dataForm($formData));
 						$this->insertDetail($tableDetail, $formDetail, $refkey);
+						//update customer
+						$customerPoint = $this->getDataRow($tableName, 'SUM(totalpoint) as totalpoint', array('customerkey' => $_POST['customerKey']))[0]['totalpoint'];
+						$customerTempPoint = $this->getDataRow('customer', 'temppoint', array('pkey' => $_POST['customerKey']))[0]['temppoint'];
+						$customerRank = $this->getDataRow('level', 'pkey', '`rankpoint` <=250', '1', '', '`level`.`rankpoint` DESC')[0]['pkey'];
+						$dataUpdateCustomer = array(
+							'point' => $customerPoint,
+							'temppoint' => $customerTempPoint + $_POST['point'],
+							'levelkey' => $customerRank,
+						);
+						$this->update('customer', $dataUpdateCustomer, array('pkey' => $_POST['customerKey']));
+						//update customer
 						redirect(base_url($baseUrl . 'List')); //wajib terakhir
 						break;
 					case 'update':
@@ -210,6 +237,73 @@ class Admin extends MY_Controller
 		$selValCustomer = $this->getDataRow('customer', '*', '', '', '', 'name ASC');
 		$data['html']['selValCustomer'] = $selValCustomer;
 		$data['html']['selValDeposit'] = $selValDeposit;
+		$data['html']['baseUrl'] = $baseUrl;
+		$data['html']['title'] = 'Input Data Transaksi Deposit';
+		$data['html']['err'] = $this->genrateErr();
+		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
+		$this->template($data);
+	}
+
+	public function levelList()
+	{
+		$tableName = 'level';
+
+		$join = array();
+		$select = '
+			' . $tableName . '.*,
+		';
+
+		$dataList = $this->getDataRow($tableName, $select, '', '', $join);
+		$data['html']['title'] = 'List Level';
+		$data['html']['dataList'] = $dataList;
+		$data['html']['tableName'] = $tableName;
+		$data['html']['form'] = get_class($this) . '/level';
+		$data['url'] = 'admin/levelList';
+		$this->template($data);
+	}
+
+	public function level($id = '')
+	{
+		$tableName = 'level';
+		$tableDetail = '';
+		$baseUrl = get_class($this) . '/' . __FUNCTION__;
+		$detailRef = '';
+		$formData = array(
+			'pkey' => 'pkey',
+			'name' => 'name',
+			'rankpoint' => array('rankPoint', 'number'),
+		);
+		$formDetail = array();
+
+		if ($_SERVER["REQUEST_METHOD"] == "POST") {
+			if (empty($_POST['action'])) redirect(base_url($baseUrl . 'List'));
+			//validate form
+			$arrMsgErr = array();
+			$point = $this->getDataRow('deposit', '*', array('pkey' => $_POST['depositKey']))[0]['point'];
+			$_POST['point'] = $point * str_replace(",", "", $_POST['calculate']);
+
+			$this->session->set_flashdata('arrMsgErr', $arrMsgErr);
+			//validate form
+			if (empty(count($arrMsgErr)))
+				switch ($_POST['action']) {
+					case 'add':
+						$refkey = $this->insert($tableName, $this->dataForm($formData));
+						$this->insertDetail($tableDetail, $formDetail, $refkey);
+						redirect(base_url($baseUrl . 'List')); //wajib terakhir
+						break;
+					case 'update':
+						$this->update($tableName, $this->dataForm($formData), array('pkey' => $_POST['pkey']));
+						$this->updateDetail($tableDetail, $formDetail, $detailRef, $id);
+						redirect(base_url($baseUrl . 'List'));
+						break;
+				}
+		}
+
+		if (!empty($id)) {
+			$dataRow = $this->getDataRow($tableName, '*', array('pkey' => $id), 1)[0];
+			$this->dataFormEdit($formData, $dataRow);
+		}
+
 		$data['html']['baseUrl'] = $baseUrl;
 		$data['html']['title'] = 'Input Data Transaksi Deposit';
 		$data['html']['err'] = $this->genrateErr();

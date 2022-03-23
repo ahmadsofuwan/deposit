@@ -47,6 +47,7 @@ $role = $this->session->userdata('role');
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Input:</h6>
             <a class="collapse-item" href="<?= base_url('Admin/customerList') ?>">Palanggan</a>
+            <a class="collapse-item" href="<?= base_url('Admin/levelList') ?>">Rank Level</a>
         </div>
     </div>
 </li>
@@ -62,12 +63,12 @@ $role = $this->session->userdata('role');
             <i class="fas fa-cog"></i><i class="fa fa-database" aria-hidden="true"></i>
             <span>Setting Data</span>
         </a>
-        <d`i`v id="datavalue" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="datavalue" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Input:</h6>
                 <a class="collapse-item" href="<?= base_url('Admin/depositList') ?>">Jenis Deposit</a>
             </div>
-            </d>
+        </div>
     </li>
 
     <li class="nav-item">
