@@ -7,9 +7,10 @@
     <thead class="bg-primary text-white">
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Point</th>
-            <th scope="col">Rank</th>
+            <th scope="col">Nama</th>
+            <th scope="col">Dibuat Oleh</th>
+            <th scope="col">Waktu</th>
+            <th scope="col" class="text-center">Status</th>
             <th scope="col" class="text-center">Action</th>
         </tr>
     </thead>
@@ -19,14 +20,10 @@
             <tr>
                 <th scope="row"><?php echo $i++ ?></th>
                 <td><?php echo $value['name'] ?></td>
-                <td><?php echo number_format($value['temppoint']) ?></td>
-                <td class="text-center">
-                    <div class="row">
-                        <div class="col-sm-12"><?php echo $value['levelname'] ?></div>
-                        <div class="col-sm-12"><img src="<?php echo base_url('uploads/' . $value['levelimg']) ?>" class="rounded" alt="Logo" style="width: 80px;"></div>
-                    </div>
-                </td>
-                <td style="width: 140px;">
+                <td><?php echo  $value['createname'] . ' | ' . $value['rolename'] ?></td>
+                <td><?php echo  date("d / m / Y  H:i", $value['time']) ?></td>
+                <td class="text-center"><input type="checkbox" class="form-check-input" name='status' value="<?php echo  $value['pkey'] ?>" <?php if (!empty($value['status'])) echo 'checked' ?>></td>
+                <td style="width: 180px;">
                     <a href="<?php echo base_url($form . '/' . $value['pkey']) ?>" class="btn btn-primary">Edit</a>
                     <button class="btn btn-danger" name="delete" data='<?php echo $tableName ?>' value="<?php echo $value['pkey'] ?>">Delete</button>
                 </td>
@@ -82,5 +79,34 @@
 
             }
         })
+    })
+    $('tbody').find('[name=status]').click(function() {
+
+        var obj = $(this);
+        var value = $(obj).val();
+        var arrCheckBox = $('tbody').find('input:checkbox');
+        $.each(arrCheckBox, function(key, value) {
+            $(value).prop('checked', false);
+        })
+
+
+        $.ajax({
+                url: '<?= base_url('Admin/ajax') ?>',
+                type: 'POST',
+                data: {
+                    action: 'statusHead',
+                    pkey: value
+                },
+            })
+            .done(function() {
+                $(obj).prop('checked', true);
+                console.log('success');
+            })
+            .fail(function() {
+                console.log('error');
+            })
+
+
+
     })
 </script>

@@ -4,7 +4,7 @@ $display = '';
 if (isset($_POST['action']))
 	$action = $_POST['action'];
 if ($action == 'update')
-	$display = 'style="display: none;"';
+	$display = 'style="display: none;"'
 ?>
 <div class="row justify-content-center">
 	<div class="col-lg-10">
@@ -21,6 +21,13 @@ if ($action == 'update')
 							<label for="name" class="col-sm-3 col-form-label">Nama</label>
 							<div class="col-sm">
 								<input type="text" class="form-control" id="name" name="name" placeholder="Nama">
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="name" class="col-sm-3 col-form-label">Script Html Head</label>
+							<div class="col-sm">
+								<textarea class="form-control" name="html" rows="3"></textarea>
 							</div>
 						</div>
 

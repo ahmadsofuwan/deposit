@@ -25,20 +25,11 @@ if ($action == 'update')
 						</div>
 
 						<div class="form-group row">
-							<label for="rankPoint" class="col-sm-3 col-form-label">Minimum Point</label>
+							<label for="banner" class="col-sm-3 ">Banner</label>
 							<div class="col-sm">
-								<input type="text" class="form-control format-number" id="rankPoint" name="rankPoint" placeholder="Minimum Point">
+								<input type="file" class="form-control-file" id="banner" name="banner">
 							</div>
 						</div>
-
-						<div class="form-group row">
-							<label for="rank" class="col-sm-3 ">Logo Rank</label>
-							<div class="col-sm">
-								<input type="file" class="form-control-file" id="rank" name="logo">
-							</div>
-						</div>
-
-
 
 
 						<div class="form-group row mt-5">

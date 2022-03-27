@@ -47,7 +47,6 @@ $role = $this->session->userdata('role');
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Input:</h6>
             <a class="collapse-item" href="<?= base_url('Admin/customerList') ?>">Palanggan</a>
-            <a class="collapse-item" href="<?= base_url('Admin/levelList') ?>">Rank Level</a>
         </div>
     </div>
 </li>
@@ -55,18 +54,23 @@ $role = $this->session->userdata('role');
     <hr class="sidebar-divider">
     <!-- Heading -->
     <div class="sidebar-heading">
-        Data Setting
+        Supper Admin
     </div>
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#datavalue" aria-expanded="true" aria-controls="datavalue">
-            <i class="fas fa-cog"></i><i class="fa fa-database" aria-hidden="true"></i>
-            <span>Setting Data</span>
+            <i class="fas fa-cog"></i></i>
+            <span>Control Panel</span>
         </a>
         <div id="datavalue" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Input:</h6>
+                <h6 class="collapse-header">Control:</h6>
                 <a class="collapse-item" href="<?= base_url('Admin/depositList') ?>">Jenis Deposit</a>
+                <a class="collapse-item" href="<?= base_url('Admin/levelList') ?>">Rank Level</a>
+                <a class="collapse-item" href="<?= base_url('Admin/headList') ?>">Head Seo</a>
+                <a class="collapse-item" href="<?= base_url('Admin/bannerList') ?>">Banner</a>
+                <a class="collapse-item" href="<?= base_url('Admin/rewardList') ?>">Reward</a>
+
             </div>
         </div>
     </li>

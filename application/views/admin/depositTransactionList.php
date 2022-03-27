@@ -11,6 +11,8 @@
             <th scope="col">Jenis Deposit</th>
             <th scope="col">Kelipatan</th>
             <th scope="col">Point</th>
+            <th scope="col">Waktu Transaksi</th>
+            <th scope="col">Dibuat Oleh</th>
             <th scope="col" class="text-center">Action</th>
         </tr>
     </thead>
@@ -23,6 +25,8 @@
                 <td><?php echo $value['depositname'] ?></td>
                 <td><?php echo number_format($value['calculate']) ?></td>
                 <td><?php echo number_format($value['totalpoint']) ?></td>
+                <td><?php echo date("d / m / Y  H:i", $value['time'])  ?></td>
+                <td><?php echo $value['createname'] . ' | ' . $value['rolename'] ?></td>
                 <td style="width: 140px;">
                     <a href="<?php echo base_url($form . '/' . $value['pkey']) ?>" class="btn btn-primary">Edit</a>
                     <button class="btn btn-danger" name="delete" data='<?php echo $tableName ?>' value="<?php echo $value['pkey'] ?>">Delete</button>

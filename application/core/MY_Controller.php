@@ -10,7 +10,6 @@ class MY_Controller extends CI_Controller
         $this->role = $this->session->userdata('role');
         $this->id = $this->session->userdata('id');
         $this->login = $this->session->userdata('login');
-        
     }
 
     public function template($data)
@@ -77,12 +76,11 @@ class MY_Controller extends CI_Controller
                 $param['colomname'] => $filename,
             );
             if (isset($param['replace']) && !empty($param['replace']) && $param['replace']) {
-                $oldName = $this->getDataRow($param['tablename'], $param['colomname'], 'id=' . $param['id'])[0][$param['colomname']];
+                $oldName = $this->getDataRow($param['tablename'], $param['colomname'], 'pkey=' . $param['pkey'])[0][$param['colomname']];
                 $this->load->helper("file");
-                delete_files('./uploads/' . $oldName);
                 unlink('./uploads/' . $oldName);
             }
-            $this->update($param['tablename'], $arrData, 'id=' . $param['id']);
+            $this->update($param['tablename'], $arrData, 'pkey=' . $param['pkey']);
             return true;
         }
     }
@@ -199,7 +197,7 @@ class MY_Controller extends CI_Controller
             if (is_array($value))
                 $value = $value[0];
 
-            $_POST[$value] = $dataRow[$key];
+                $_POST[$value] = $dataRow[$key];
         }
         $_POST['action'] = 'update';
         return $data;

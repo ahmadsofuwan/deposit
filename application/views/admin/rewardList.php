@@ -1,23 +1,18 @@
-<div class="row py-2">
-    <div class="col-sm-1">
-        <a href="<?php echo base_url($form) ?>" id="add"><i class="fa fa-plus fa-2x"></i></a>
-    </div>
+<div class="row">
     <div class="col-sm-2">
-        <select name="class" class=" form-control" id="class" onchange="location = this.value;">
-            <option value="<?php echo base_url('Admin/studentList/') ?>" <?php if (empty($classKey)) echo 'selected' ?>>Semua Kelas</option>
-            <?php foreach ($selValClass as $key => $value) { ?>
-                <option value="<?php echo base_url('Admin/studentList/' . $value['pkey']) ?>" <?php if ($classKey == $value['pkey']) echo 'selected' ?>><?php echo $value['name'] ?></option>
-            <?php } ?>
-        </select>
+        <a href="<?php echo base_url($form) ?>"><i class="fa fa-plus fa-2x"></i></a>
     </div>
 </div>
 <table class="table table-responsive-sm" id="dataTable">
     <thead class="bg-primary text-white">
         <tr>
             <th scope="col">#</th>
-            <th scope="col">NIS</th>
+            <th scope="col">Title</th>
             <th scope="col">Nama</th>
-            <th scope="col">Kelas</th>
+            <th scope="col">point</th>
+            <th scope="col">Dibuat Oleh</th>
+            <th scope="col">Waktu</th>
+            <th scope="col" class="text-center">Gambar Reword</th>
             <th scope="col" class="text-center">Action</th>
         </tr>
     </thead>
@@ -26,14 +21,17 @@
         foreach ($dataList as $value) { ?>
             <tr>
                 <th scope="row"><?php echo $i++ ?></th>
-                <td><?php echo $value['nis'] ?></td>
+                <td><?php echo $value['title'] ?></td>
                 <td><?php echo $value['name'] ?></td>
-                <td class="align-right"><?php echo $value['classname']  ?></td>
-                <td style="width: 140px;text-align: center;">
+                <td><?php echo $value['point'] ?></td>
+                <td><?php echo  $value['createname'] . ' | ' . $value['rolename'] ?></td>
+                <td><?php echo  date("d / m / Y  H:i", $value['time']) ?></td>
+                <td class="text-center">
+                    <img src="<?php echo base_url('uploads/' . $value['img']) ?>" class="rounded" alt="Logo" style="width: 80px;">
+                </td>
+                <td style="width: 180px;">
                     <a href="<?php echo base_url($form . '/' . $value['pkey']) ?>" class="btn btn-primary">Edit</a>
-                    <?php if ($role == 1) { ?>
-                        <button class="btn btn-danger" name="delete" value="<?php echo $value['pkey'] ?>">Delete</button>
-                    <?php } ?>
+                    <button class="btn btn-danger" name="delete" data='<?php echo $tableName ?>' value="<?php echo $value['pkey'] ?>">Delete</button>
                 </td>
             </tr>
         <?php } ?>
@@ -45,6 +43,7 @@
     $('tbody').find('[name=delete]').click(function() {
         var pkey = $(this).val();
         var obj = $(this);
+        var tbl = obj.attr('data');
         Swal.fire({
             title: 'yakin?',
             text: "Data Akan Di Hapus Secara Permanen",
@@ -59,8 +58,9 @@
                         url: '<?= base_url('Admin/ajax') ?>',
                         type: 'POST',
                         data: {
-                            action: 'deleteStudent',
+                            action: 'delete',
                             pkey: pkey,
+                            tbl: tbl,
                         },
                     })
                     .done(function(a) {
