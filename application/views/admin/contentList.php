@@ -93,7 +93,7 @@
                 url: '<?= base_url('Admin/ajax') ?>',
                 type: 'POST',
                 data: {
-                    action: 'statuslink',
+                    action: 'statusContent',
                     pkey: value
                 },
             })

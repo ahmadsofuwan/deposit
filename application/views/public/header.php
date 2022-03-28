@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" href="<?php echo base_url('uploads/' . $dataCompany[0]['logo']) ?>">
     <?php
     foreach ($head as $headKey => $headValue) {
         echo $headValue['html'];
@@ -46,8 +47,8 @@
 </head>
 
 <body id="page-top">
-    <nav class="navbar navbar-expand-lg text-white navbar-light bg-dark">
-        <a class="navbar-brand" href="<?php echo base_url() ?>"><img src="<?php echo base_url('uploads/' . $dataCompany[0]['logo']) ?>" alt="Logo" style="width: 50px;"></a>
+    <nav class="navbar navbar-expand-lg text-white navbar-light" style="background-color: #54595F;">
+        <a class="navbar-brand" href="<?php echo base_url() ?>"><img src="<?php echo base_url('uploads/' . $dataCompany[0]['logo']) ?>" alt="Logo" style="width: 200px;"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -55,12 +56,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto text-white">
                 <li class="nav-item active">
-                    <a class="nav-link" href="<?php echo base_url() ?>">Home <span class="sr-only">(current)</span></a>
+                    <!-- <a class="nav-link" href="<?php echo base_url() ?>">Home <span class="sr-only">(current)</span></a> -->
                 </li>
             </ul>
             <div class="form-inline my-2 my-lg-0 mr-3">
-                <button class="btn btn-warning">MASUK</button>
-                <button class="btn btn-danger ml-2">Daftar</button>
+                <a href="<?php echo $link['in'] ?>" class="btn text-white" style="background-color: #FF6900">MASUK</a>
+                <a href="<?php echo $link['register'] ?>" class="btn ml-2 text-white" style="background-color: #CF2E2E">Daftar</a>
             </div>
             <div class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Cari Akun Kamu" aria-label="Search" id="inputSearch">

@@ -10,7 +10,11 @@ class Content extends MY_Controller
 		$head = $this->getDataRow('head', 'html', array('status' => '1'));
 		$banner = $this->getDataRow('banner', '*', array('status' => '1'));
 		$reward = $this->getDataRow('reward', '*');
+		$link = $this->getDataRow('link', '*', array('status' => '1'));
+		$content = $this->getDataRow('content', '*', array('status' => '1'));
 
+		$data['html']['content'] = $content[0];
+		$data['html']['link'] = $link[0];
 		$data['html']['reward'] = $reward;
 		$data['html']['banner'] = $banner;
 		$data['html']['head'] = $head;

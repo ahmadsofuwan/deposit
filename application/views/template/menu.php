@@ -40,8 +40,8 @@ $role = $this->session->userdata('role');
 <!-- Nav Item - Pages Collapse Menu -->
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-        <i class="fa fa-database" aria-hidden="true"></i>
-        <span>Master Data</span>
+        <i class="fas fa-users"></i>
+        <span>Pelanggan</span>
     </a>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
@@ -70,6 +70,8 @@ $role = $this->session->userdata('role');
                 <a class="collapse-item" href="<?= base_url('Admin/headList') ?>">Head Seo</a>
                 <a class="collapse-item" href="<?= base_url('Admin/bannerList') ?>">Banner</a>
                 <a class="collapse-item" href="<?= base_url('Admin/rewardList') ?>">Reward</a>
+                <a class="collapse-item" href="<?= base_url('Admin/linkList') ?>">Link</a>
+                <a class="collapse-item" href="<?= base_url('Admin/contentList') ?>">Content</a>
 
             </div>
         </div>
@@ -77,7 +79,7 @@ $role = $this->session->userdata('role');
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#galery" aria-expanded="true" aria-controls="galery">
-            <i class="fas fa-users"></i>
+            <i class="fas fa-user-cog"></i>
             <span>User</span>
         </a>
         <div id="galery" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">

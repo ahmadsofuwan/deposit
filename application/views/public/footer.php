@@ -1,3 +1,24 @@
+<!-- Footer -->
+<footer class="text-center text-white" style="background-color: #22231d;">
+    <!-- Grid container -->
+    <div class="container p-4">
+        <div class="d-flex justify-content-center">
+            <img src="<?php echo base_url('uploads/footer.jpg') ?>" style="min-width: 300px;">
+        </div>
+    </div>
+    <!-- Grid container -->
+
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2022 Copyright:
+        <a class="text-white" href="#!"><?php echo $title ?></a>
+    </div>
+    <!-- Copyright -->
+</footer>
+<!-- Footer -->
+
+
+
 <!-- Bootstrap core JavaScript-->
 
 <script src="<?= base_url('asset/sb_admin2/'); ?>vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
