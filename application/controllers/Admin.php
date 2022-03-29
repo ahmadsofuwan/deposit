@@ -802,14 +802,13 @@ class Admin extends MY_Controller
 	public function user($id = '')
 	{
 		$tableName = 'account';
-		$tableDetail = 'account_detail';
+		$tableDetail = '';
 		$baseUrl = get_class($this) . '/' . __FUNCTION__;
 		$detailRef = '';
 		$formData = array(
 			'pkey' => 'pkey',
 			'name' => 'name',
 			'username' => 'username',
-			'password' => array('password', 'md5'),
 			'role' => 'role',
 		);
 		$formDetail = array();
@@ -833,11 +832,14 @@ class Admin extends MY_Controller
 			if (empty(count($arrMsgErr)))
 				switch ($_POST['action']) {
 					case 'add':
+						$formData['password'] = array('password', 'md5');
 						$refkey = $this->insert($tableName, $this->dataForm($formData));
 						$this->insertDetail($tableDetail, $formDetail, $refkey);
 						redirect(base_url($baseUrl . 'List')); //wajib terakhir
 						break;
 					case 'update':
+						if (!empty($_POST['password']))
+							$formData['password'] = array('password', 'md5');
 						$this->update($tableName, $this->dataForm($formData), array('pkey' => $_POST['pkey']));
 						$this->updateDetail($tableDetail, $formDetail, $detailRef, $id);
 						redirect(base_url($baseUrl . 'List'));
