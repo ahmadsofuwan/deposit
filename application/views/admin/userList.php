@@ -23,7 +23,7 @@
                 <td><?php echo $value['name'] ?></td>
                 <td style="width: 140px;">
                     <a href="<?php echo base_url($form . '/' . $value['pkey']) ?>" class="btn btn-primary">Edit</a>
-                    <button class="btn btn-danger" name="delete" value="<?php echo $value['pkey'] ?>">Delete</button>
+                    <button class="btn btn-danger" name="delete" data='<?php echo $tableName ?>' value="<?php echo $value['pkey'] ?>">Delete</button>
                 </td>
             </tr>
         <?php } ?>
@@ -35,6 +35,7 @@
     $('tbody').find('[name=delete]').click(function() {
         var pkey = $(this).val();
         var obj = $(this);
+        var tbl = obj.attr('data');
         Swal.fire({
             title: 'yakin?',
             text: "Data Akan Di Hapus Secara Permanen",
@@ -49,12 +50,12 @@
                         url: '<?= base_url('Admin/ajax') ?>',
                         type: 'POST',
                         data: {
-                            action: 'deleteUser',
+                            action: 'delete',
                             pkey: pkey,
+                            tbl: tbl,
                         },
                     })
                     .done(function(a) {
-                        console.log(a);
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',

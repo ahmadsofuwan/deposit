@@ -788,12 +788,14 @@ class Admin extends MY_Controller
 	{
 		if ($this->session->userdata('role') != '1')
 			redirect(base_url());
+		$tableName = 'account';
 		$join = array(
 			array('role', 'role.pkey=account.role', 'left'),
 		);
-		$dataList = $this->getDataRow('account', 'account.*, role.name as rolename', '', '', $join, 'name ASC');
+		$dataList = $this->getDataRow($tableName, 'account.*, role.name as rolename', '', '', $join, 'name ASC');
 		$data['html']['title'] = 'List Account';
 		$data['html']['dataList'] = $dataList;
+		$data['html']['tableName'] = $tableName;
 		$data['html']['form'] = get_class($this) . '/user';
 		$data['url'] = 'admin/userList';
 		$this->template($data);
