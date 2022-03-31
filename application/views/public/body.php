@@ -38,11 +38,10 @@
                     <div class="col-sm-12 text-center text-dark" style="font-weight: bold;font-size: 1.5em;"><b><?php echo $rewardValue['title'] ?></b></div>
                     <div class="col-sm-12 text-center"><?php echo $rewardValue['name'] ?></div>
                     <div class="col-sm-12 text-center">Point : <?php echo number_format($rewardValue['point']) ?></div>
-                    <div class="col-sm-6 text-center"> <a href="<?php echo $link['claim'] ?>" class="btn btn-primary btn-block my-1">Klaim Sekarang</a></div>
-                    <div class="col-sm-6 text-center" style="font-size: x-large;"> <a href="<?php echo $link['wa'] ?>" class="btn btn-success btn-block my-1"><i class="fab fa-whatsapp"></i></i> Chat</a></div>
+                    <div class="col-sm-6 text-center"> <a href="<?php echo $link['claim'] ?>" target="_blank" class="btn btn-primary btn-block my-1">Klaim Sekarang</a></div>
+                    <div class="col-sm-6 text-center" style="font-size: x-large;"> <a href="<?php echo $link['wa'] ?>" target="_blank" class="btn btn-success btn-block my-1"><i class="fab fa-whatsapp"></i></i> Chat</a></div>
                 </div>
             </div>
-
         <?php } ?>
     </div>
 </div>
