@@ -7,6 +7,11 @@ $role = $this->session->userdata('role');
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span></a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" href="<?= base_url(); ?>" target="_blank">
+        <i class="fas fa-home"></i>
+        <span>Home Page</span></a>
+</li>
 
 <!-- Divider -->
 <hr class="sidebar-divider">
