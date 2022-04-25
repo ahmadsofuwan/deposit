@@ -69,7 +69,7 @@
                     element += '<b>' + data.name + '</b>';
                     element += '</div>';
                     element += '<div class="col-sm-12 text-primary">';
-                    element += 'Point :' + data.point;
+                    element += 'Point :' + data.temppoint;
                     element += '</div>';
                     element += '</div>';
 

@@ -30,6 +30,7 @@ $role = $this->session->userdata('role');
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Input:</h6>
             <a class="collapse-item" href="<?= base_url('Admin/depositTransactionList') ?>">Deposit</a>
+            <a class="collapse-item" href="<?= base_url('Admin/claimList') ?>">Claim</a>
         </div>
     </div>
 </li>

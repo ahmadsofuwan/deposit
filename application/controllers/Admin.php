@@ -153,7 +153,6 @@ class Admin extends MY_Controller
 		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
 		$this->template($data);
 	}
-
 	public function depositTransactionList()
 	{
 		$tableName = 'deposit_transaction';
@@ -268,6 +267,8 @@ class Admin extends MY_Controller
 		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
 		$this->template($data);
 	}
+
+
 
 	public function levelList()
 	{
@@ -778,6 +779,117 @@ class Admin extends MY_Controller
 		$this->template($data);
 	}
 
+	public function claimList()
+	{
+		$tableName = 'claim';
+		$join = array(
+			array('account', 'account.pkey=' . $tableName . '.createon', 'left'),
+			array('role', 'role.pkey=account.role', 'left'),
+			array('customer', 'customer.pkey=' . $tableName . '.customerkey', 'left'),
+			array('reward', 'reward.pkey=' . $tableName . '.rewardkey', 'left'),
+		);
+		$select = '
+			' . $tableName . '.*,
+			account.name as createname,
+			account.role as createrole,
+			role.name as rolename,
+			customer.name as customername,
+			reward.title as titlereward,
+			reward.point as pointreward,
+			reward.img as rewardimg,
+		';
+
+		$dataList = $this->getDataRow($tableName, $select, '', '', $join);
+		$data['html']['title'] = 'List Calaim';
+		$data['html']['dataList'] = $dataList;
+		$data['html']['tableName'] = $tableName;
+		$data['html']['form'] = get_class($this) . '/claim';
+		$data['url'] = 'admin/claimList';
+		$this->template($data);
+	}
+
+	public function claim($id = '')
+	{
+		$tableName = 'claim';
+		$tableDetail = '';
+		$baseUrl = get_class($this) . '/' . __FUNCTION__;
+		$detailRef = '';
+		$formData = array(
+			'pkey' => 'pkey',
+			'createon' => 'sesionid',
+			'time' => 'time',
+			'customerkey' => 'customerKey',
+			'rewardkey' => 'rewardKey',
+			'rewardpoint' => 'rewardPoint',
+			'note' => 'note',
+		);
+		$formDetail = array();
+
+		if ($_SERVER["REQUEST_METHOD"] == "POST") {
+			if (empty($_POST['action'])) redirect(base_url($baseUrl . 'List'));
+			//validate form
+			$arrMsgErr = array();
+			if (empty($_POST['customerKey']))
+				array_push($arrMsgErr, "Nama Pelanggan wajib Di isi");
+			if (empty($_POST['rewardKey']))
+				array_push($arrMsgErr, "Reward wajib Di isi");
+			// cek point mencukupi atau tidak
+			$nowPoint = $this->getDataRow('customer', 'temppoint', array('pkey' => $_POST['customerKey']))[0]['temppoint'];
+			$rewardPoint = $this->getDataRow('reward', 'point', array('pkey' => $_POST['rewardKey']))[0]['point'];
+
+			if ((int)$nowPoint < (int)$rewardPoint)
+				array_push($arrMsgErr, "Point tidak mencukupi saat in Point = " . number_format($nowPoint));
+
+			$this->session->set_flashdata('arrMsgErr', $arrMsgErr);
+			//validate form
+			if (empty(count($arrMsgErr)))
+				switch ($_POST['action']) {
+					case 'add':
+						$_POST['rewardPoint'] = $this->getDataRow('reward', 'point', array('pkey' => $_POST['rewardKey']))[0]['point'];
+						$nowPoint = $this->getDataRow('customer', 'temppoint', array('pkey' => $_POST['customerKey']))[0]['temppoint'];
+						$updatePoint = (int)$nowPoint - (int)$_POST['rewardPoint'];
+						$this->update('customer', array('temppoint' => $updatePoint), array('pkey' => $_POST['customerKey']));
+
+						$refkey = $this->insert($tableName, $this->dataForm($formData));
+						$this->insertDetail($tableDetail, $formDetail, $refkey);
+						redirect(base_url($baseUrl . 'List')); //wajib terakhir
+						break;
+					case 'update':
+						// mengembalikan Point
+						$rewardPoint = $this->getDataRow($tableName, 'rewardpoint', array('pkey' => $_POST['pkey']))[0]['rewardpoint'];
+						$nowPoint = $this->getDataRow('customer', 'temppoint', array('pkey' => $_POST['customerKey']))[0]['temppoint'];
+						$updatePoint = (int)$nowPoint + $rewardPoint;
+						$this->update('customer', array('temppoint' => $updatePoint), array('pkey' => $_POST['customerKey']));
+
+						//memasukan ulang Point
+						$_POST['rewardPoint'] = $this->getDataRow('reward', 'point', array('pkey' => $_POST['rewardKey']))[0]['point'];
+						$nowPoint = $this->getDataRow('customer', 'temppoint', array('pkey' => $_POST['customerKey']))[0]['temppoint'];
+						$updatePoint = (int)$nowPoint - (int)$_POST['rewardPoint'];
+						$this->update('customer', array('temppoint' => $updatePoint), array('pkey' => $_POST['customerKey']));
+
+
+						$_POST['rewardPoint'] = $this->getDataRow('reward', 'point', array('pkey' => $_POST['rewardKey']))[0]['point'];
+						$this->update($tableName, $this->dataForm($formData), array('pkey' => $_POST['pkey']));
+						$this->updateDetail($tableDetail, $formDetail, $detailRef, $id);
+						redirect(base_url($baseUrl . 'List'));
+						break;
+				}
+		}
+
+		if (!empty($id)) {
+			$dataRow = $this->getDataRow($tableName, '*', array('pkey' => $id), 1)[0];
+			$this->dataFormEdit($formData, $dataRow);
+		}
+		$selValCustomer = $this->getDataRow('customer', '*', '', '', '', 'customer.name');
+		$selValReward = $this->getDataRow('reward', '*', '', '', '', 'reward.title');
+		$data['html']['selValReward'] = $selValReward;
+		$data['html']['selValCustomer'] = $selValCustomer;
+		$data['html']['baseUrl'] = $baseUrl;
+		$data['html']['title'] = 'Input Data ' . __FUNCTION__;
+		$data['html']['err'] = $this->genrateErr();
+		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
+		$this->template($data);
+	}
 
 
 
@@ -903,7 +1015,22 @@ class Admin extends MY_Controller
 						$this->delete($_POST['tbl'], 'pkey=' . $_POST['pkey']);
 						break;
 					default:
-						$this->delete($_POST['tbl'], 'pkey=' . $_POST['pkey']);
+						switch ($_POST['tbl']) {
+							case 'claim':
+								$data = $this->getDataRow($_POST['tbl'], '*', array('pkey' => $_POST['pkey']))[0];
+								$nowPoint = $this->getDataRow('customer', 'temppoint', array('pkey' => $data['customerkey']))[0]['temppoint'];
+								$updatePoint = (int)$nowPoint + (int)$data['rewardpoint'];
+								$this->update('customer', array('temppoint' => $updatePoint), array('pkey' => $data['customerkey']));
+
+								$this->delete($_POST['tbl'], 'pkey=' . $_POST['pkey']);
+								break;
+
+							default:
+								$this->delete($_POST['tbl'], 'pkey=' . $_POST['pkey']);
+								break;
+						}
+
+
 						break;
 				}
 				break;
