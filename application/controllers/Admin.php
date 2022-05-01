@@ -50,8 +50,13 @@ class Admin extends MY_Controller
 			if (empty($_POST['action'])) redirect(base_url($baseUrl . 'List'));
 			//validate form
 			$arrMsgErr = array();
-			if (empty($_POST['name']))
+			if (empty($_POST['name'])) {
 				array_push($arrMsgErr, "Nama wajib Di isi");
+			} else {
+				$chekName = $this->getDataRow($tableName, 'name', array('name' => $_POST['name']));
+				if (!empty(count($chekName)))
+					array_push($arrMsgErr, "Nama sudah di gunakan silahkan Masukan Nama lain");
+			}
 
 			$this->session->set_flashdata('arrMsgErr', $arrMsgErr);
 			//validate form
