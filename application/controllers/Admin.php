@@ -210,6 +210,14 @@ class Admin extends MY_Controller
 			$arrMsgErr = array();
 			$point = $this->getDataRow('deposit', '*', array('pkey' => $_POST['depositKey']))[0]['point'];
 			$_POST['point'] = (int) $point * str_replace(",", "", $_POST['calculate']);
+			$now = strtotime("now");
+			$midnight = strtotime(date('Y-m-d', $now) . ' midnight');
+			$where = 'customerkey = ' . $_POST['customerKey'] . ' AND `time` BETWEEN ' . $midnight . ' AND ' . $now . '';
+			$data = $this->getDataRow($tableName, 'SUM(totalpoint) AS total', $where);
+			if ($data[0]['total'] + $_POST['point'] > 350) {
+				$maxPoint = 350 - $data[0]['total'];
+				array_push($arrMsgErr, "Point harian tidak boleh melebihi 350 Point harian sekarang " . number_format($data[0]['total']) . ", Maximal Deposit Point :" . $maxPoint);
+			}
 			$this->session->set_flashdata('arrMsgErr', $arrMsgErr);
 			//validate form
 			if (empty(count($arrMsgErr)))
@@ -272,8 +280,6 @@ class Admin extends MY_Controller
 		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
 		$this->template($data);
 	}
-
-
 
 	public function levelList()
 	{
