@@ -9,7 +9,7 @@ class Content extends MY_Controller
 		$dataCompany = $this->getDataRow('profile_company', '*');
 		$head = $this->getDataRow('head', 'html', array('status' => '1'));
 		$banner = $this->getDataRow('banner', '*', array('status' => '1'));
-		$reward = $this->getDataRow('reward', '*');
+		$reward = $this->getDataRow('reward', '*', '', '', '', 'reward.point DESC');
 		$link = $this->getDataRow('link', '*', array('status' => '1'));
 		$content = $this->getDataRow('content', '*', array('status' => '1'));
 

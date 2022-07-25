@@ -214,7 +214,7 @@ class Admin extends MY_Controller
 			$midnight = strtotime(date('Y-m-d', $now) . ' midnight');
 			$where = 'customerkey = ' . $_POST['customerKey'] . ' AND `time` BETWEEN ' . $midnight . ' AND ' . $now . '';
 			$data = $this->getDataRow($tableName, 'SUM(totalpoint) AS total', $where);
-			if ($data[0]['total'] + $_POST['point'] > 350) {
+			if ($data[0]['total'] + $_POST['point'] > 350 && $this->role <> 1) {
 				$maxPoint = 350 - $data[0]['total'];
 				array_push($arrMsgErr, "Point harian tidak boleh melebihi 350 Point harian sekarang " . number_format($data[0]['total']) . ", Maximal Deposit Point :" . $maxPoint);
 			}
