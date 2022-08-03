@@ -158,10 +158,12 @@ class Admin extends MY_Controller
 		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
 		$this->template($data);
 	}
-	public function depositTransactionList()
+	public function depositTransactionList($start = '')
 	{
 		$tableName = 'deposit_transaction';
-
+		$perpage = 10;
+		$limit = $perpage;
+		$like = array();
 		$join = array(
 			array('deposit', 'deposit.pkey=' . $tableName . '.depositkey', 'left'),
 			array('customer', 'customer.pkey=' . $tableName . '.customerkey', 'left'),
@@ -175,9 +177,55 @@ class Admin extends MY_Controller
 			account.name as createname,
 			account.role as createrole,
 			role.name as rolename,
-		';
+			';
+		if ($start) {
+			$limit = [$start + $perpage, $start];
+		}
+		if ($_SERVER["REQUEST_METHOD"] == "POST") {
+			$like = array(
+				'calculate' => $_POST['search'],
+				'totalpoint' => $_POST['search'],
+				'time' => strtotime($_POST['search']),
+				'deposit.name' => $_POST['search'],
+				'customer.name' => $_POST['search'],
+				'account.name' => $_POST['search'],
+				'role.name' => $_POST['search'],
+				'account.role' => $_POST['search'],
+			);
+		}
 
-		$dataList = $this->getDataRow($tableName, $select, '', '', $join);
+		$dataList = $this->getDataRow($tableName, $select, '', $limit, $join, $tableName . '.time DESC ', '', $like);
+
+
+		//pagenation
+		$this->load->library('pagination');
+
+		$config['base_url'] = base_url(get_class($this) . '/' . __FUNCTION__);
+		$config['total_rows'] = count($this->getDataRow($tableName, 'pkey'));
+		$config['per_page'] = $perpage;
+		$config['full_tag_open'] = '<ul class="pagination">';
+		$config['full_tag_close'] = '</ul>';
+		$config['cur_tag_open'] = '<li class="paginate_button page-item active"><a class="page-link">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['num_tag_open'] = '<li class="paginate_button page-item">';
+		$config['num_tag_close'] = '</li>';
+		$config['next_link'] = 'Next';
+		$config['next_tag_open'] = '<li class="paginate_button page-item next">';
+		$config['next_tag_close'] = '</li>';
+		$config['prev_link'] = 'Previous';
+		$config['prev_tag_open'] = '<li class="paginate_button page-item next">';
+		$config['prev_tag_close'] = '</li>';
+		$config['first_tag_open'] = '<li class="paginate_button page-item">';
+		$config['first_tag_close'] = '</li>';
+		$config['attributes'] = array('class' => 'page-link');
+		$this->pagination->initialize($config);
+		$pagenation = $this->pagination->create_links();
+
+
+
+
+
+		$data['html']['pagenation'] = $pagenation;
 		$data['html']['title'] = 'List Deposit';
 		$data['html']['dataList'] = $dataList;
 		$data['html']['tableName'] = $tableName;
@@ -270,6 +318,13 @@ class Admin extends MY_Controller
 			$dataRow = $this->getDataRow($tableName, '*', array('pkey' => $id), 1)[0];
 			$this->dataFormEdit($formData, $dataRow);
 		}
+
+
+
+
+
+
+
 		$selValDeposit = $this->getDataRow('deposit', '*', '', '', '', 'name ASC');
 		$selValCustomer = $this->getDataRow('customer', '*', '', '', '', 'name ASC');
 		$data['html']['selValCustomer'] = $selValCustomer;

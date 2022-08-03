@@ -3,10 +3,16 @@
         <a href="<?php echo base_url($form) ?>"><i class="fa fa-plus fa-2x"></i></a>
     </div>
 </div>
-<table class="table table-responsive-sm" id="dataTable">
+<form method="POST">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div id="dataTable_filter" class="dataTables_filter"><label>Search:<input type="search" name="search" class="form-control form-control-sm" placeholder="Search" aria-controls="dataTable"></label></div>
+        </div>
+    </div>
+</form>
+<table class="table table-responsive-sm">
     <thead class="bg-primary text-white">
         <tr>
-            <th scope="col">#</th>
             <th scope="col">Pelanggan</th>
             <th scope="col">Jenis Deposit</th>
             <th scope="col">Kelipatan</th>
@@ -20,7 +26,6 @@
         <?php $i = 1;
         foreach ($dataList as $value) { ?>
             <tr>
-                <th scope="row"><?php echo $i++ ?></th>
                 <td><?php echo $value['customername'] ?></td>
                 <td><?php echo $value['depositname'] ?></td>
                 <td><?php echo number_format($value['calculate']) ?></td>
@@ -33,8 +38,17 @@
                 </td>
             </tr>
         <?php } ?>
+
     </tbody>
 </table>
+<div class="row">
+    <div class="col-sm-12 col-md-7">
+        <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+            <?php echo $pagenation ?>
+        </div>
+    </div>
+</div>
+
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

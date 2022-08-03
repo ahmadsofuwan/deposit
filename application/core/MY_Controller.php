@@ -24,10 +24,10 @@ class MY_Controller extends CI_Controller
         $this->load->view('public/base.php', $data);
     }
 
-    public function getDataRow($tbl, $row, $arrWhere = '', $limit = '', $arrJoin = array()/*array in array*/, $orderBy = '', $arrWhereIn = array())
+    public function getDataRow($tbl, $row, $arrWhere = '', $limit = '', $arrJoin = array()/*array in array*/, $orderBy = '', $arrWhereIn = array(), $like = array())
     {
         $this->load->model('Base_model');
-        return $this->Base_model->getDataRow($tbl, $row, $arrWhere, $limit, $arrJoin, $orderBy, $arrWhereIn);
+        return $this->Base_model->getDataRow($tbl, $row, $arrWhere, $limit, $arrJoin, $orderBy, $arrWhereIn, $like);
     }
 
     public function insert($tbl, $arrData)
@@ -197,7 +197,7 @@ class MY_Controller extends CI_Controller
             if (is_array($value))
                 $value = $value[0];
 
-                $_POST[$value] = $dataRow[$key];
+            $_POST[$value] = $dataRow[$key];
         }
         $_POST['action'] = 'update';
         return $data;

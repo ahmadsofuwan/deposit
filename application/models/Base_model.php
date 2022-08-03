@@ -3,14 +3,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Base_model extends CI_Model
 {
-    public function getDataRow($tbl, $row, $arrWhere = '', $limit = '', $arrJoin = array(), $orderBy = '', $arrWhereIn = '')
+    public function getDataRow($tbl, $row, $arrWhere = '', $limit = '', $arrJoin = array(), $orderBy = '', $arrWhereIn = '', $like = array())
     {
         if (!empty($arrWhere))
             $this->db->where($arrWhere);
         if (!empty($arrWhereIn) && is_array($arrWhereIn))
             $this->db->where_in($arrWhereIn);
-        if (!empty($limit))
-            $this->db->limit($limit);
+        if (!empty($limit)) {
+            if (is_array($limit)) {
+                $this->db->limit($limit[0], $limit[1]);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
         if (!empty($orderBy))
             $this->db->order_by($orderBy);
         if (is_array($arrJoin))
@@ -23,6 +28,8 @@ class Base_model extends CI_Model
                     $this->db->join($item[0], $item[1], $param,);
                 }
             }
+        if (!empty($like) && count($like) <> 0)
+            $this->db->like($like);
 
         $this->db->select($row);
         $this->db->from($tbl);
