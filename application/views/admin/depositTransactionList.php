@@ -3,14 +3,14 @@
         <a href="<?php echo base_url($form) ?>"><i class="fa fa-plus fa-2x"></i></a>
     </div>
 </div>
-<form method="POST">
+<!-- <form method="POST">
     <div class="row">
         <div class="col-sm-12 col-md-12">
             <div id="dataTable_filter" class="dataTables_filter"><label>Search:<input type="search" name="search" class="form-control form-control-sm" placeholder="Search" aria-controls="dataTable"></label></div>
         </div>
     </div>
-</form>
-<table class="table table-responsive-sm">
+</form> -->
+<table class="table table-responsive-sm" id="tableServer">
     <thead class="bg-primary text-white">
         <tr>
             <th scope="col">Pelanggan</th>
@@ -98,4 +98,14 @@
             }
         })
     })
+    $(document).ready(function() {
+        $('#tableServer').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '<?= base_url('Admin/getTarnsaction') ?>',
+                type: 'POST',
+            },
+        });
+    });
 </script>

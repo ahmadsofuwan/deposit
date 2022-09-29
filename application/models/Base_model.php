@@ -28,8 +28,12 @@ class Base_model extends CI_Model
                     $this->db->join($item[0], $item[1], $param,);
                 }
             }
-        if (!empty($like) && count($like) <> 0)
-            $this->db->like($like);
+        // $this->db->like($like);
+        if (count($like) <> 0) {
+            foreach ($like as $key => $value) {
+                $this->db->or_where($value[0] . '=', $value[1]);
+            }
+        }
 
         $this->db->select($row);
         $this->db->from($tbl);

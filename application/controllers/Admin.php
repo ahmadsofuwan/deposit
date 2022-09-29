@@ -163,7 +163,7 @@ class Admin extends MY_Controller
 		$tableName = 'deposit_transaction';
 		$perpage = 10;
 		$limit = $perpage;
-		$like = array();
+		$like = '';
 		$join = array(
 			array('deposit', 'deposit.pkey=' . $tableName . '.depositkey', 'left'),
 			array('customer', 'customer.pkey=' . $tableName . '.customerkey', 'left'),
@@ -194,7 +194,7 @@ class Admin extends MY_Controller
 			);
 		}
 
-		$dataList = $this->getDataRow($tableName, $select, '', $limit, $join, $tableName . '.time DESC ', '', $like);
+		$dataList = $this->getDataRow($tableName, $select, $like, $limit, $join, $tableName . '.time DESC');
 
 
 		//pagenation
@@ -955,6 +955,103 @@ class Admin extends MY_Controller
 		$data['html']['err'] = $this->genrateErr();
 		$data['url'] = 'admin/' . __FUNCTION__ . 'Form';
 		$this->template($data);
+	}
+	public function getTarnsaction()
+	{
+		// echo json_encode($_POST);
+
+		// die; //datatable config
+		$allData = array();
+		$colomOrder = array(
+			'customer.name',
+			'deposit.name',
+			'deposit_transaction.calculate',
+			'deposit_transaction.totalpoint',
+			'deposit_transaction.time',
+			'account.name',
+		);
+
+		$tableName = 'deposit_transaction';
+		$select = '
+			' . $tableName . '.*,
+			deposit.name as depositname,
+			customer.name as customername,
+			account.name as createname,
+			account.role as createrole,
+			role.name as rolename,
+			';
+		$limit = [$this->input->post('length'), $this->input->post('start')];
+		$joint = array(
+			array('deposit', 'deposit.pkey=' . $tableName . '.depositkey', 'left'),
+			array('customer', 'customer.pkey=' . $tableName . '.customerkey', 'left'),
+			array('account', 'account.pkey=' . $tableName . '.createon', 'left'),
+			array('role', 'role.pkey=account.role', 'left'),
+		);
+		$like = array();
+
+
+
+		$order = '';
+		if ($this->input->post('draw') == 1) {
+			$order = 'pkey desc';
+		} else {
+			$order = $colomOrder[$this->input->post('order')[0]['column']] . ' ' . $this->input->post('order')[0]['dir'];
+		}
+		if (!empty($this->input->post('search')['value'])) {
+			$param = $this->input->post('search')['value'];
+			$like = array(
+				array('deposit_transaction.time', strtotime($param)),
+				array('deposit_transaction.totalpoint', $param),
+				array('deposit_transaction.calculate', $param),
+				array('deposit.name', $param),
+				array('customer.name', $param),
+				array('account.name', $param),
+				array('account.role', $param),
+				array('role.name', $param),
+			);
+			// $like = array(
+			// 	'deposit_transaction.time' => strtotime($param),
+			// 	'deposit_transaction.totalpoint' => $param,
+			// 	'deposit_transaction.calculate' => $param,
+			// 	'deposit.name' => $param,
+			// 	'customer.name' => $param,
+			// 	'account.name' => $param,
+			// 	'account.role' => $param,
+			// 	'role.namea' => $param,
+			// );
+		}
+
+
+
+
+		$transaction = $this->getDataRow($tableName, $select, '', $limit, $joint, $order, '', $like);
+		$countData = $this->getDataRow($tableName, $tableName . '.pkey', '', '', $joint, $order, '', $like);
+		$countDataTotal = $this->getDataRow($tableName, $tableName . '.pkey');
+		foreach ($transaction as $key => $value) {
+			$arr = array(
+				$value['customername'],
+				$value['depositname'],
+				number_format($value['calculate']),
+				number_format($value['totalpoint']),
+				date("d / m / Y  H:i", $value['time']),
+				$value['createname'] . '|' . $value['rolename'],
+				'<a href="' . base_url('Admin/depositTransaction/') . $value['pkey'] . '" class="btn btn-primary">Edit</a>' .
+					'<button class="btn btn-danger ml-3" name="delete" data="' . $tableName . '" value="' . $value['pkey'] . '">Delete</button>',
+
+			);
+			array_push($allData, $arr);
+		}
+
+
+
+
+		$data =  array(
+			'draw' => $this->input->post('draw'),
+			'recordsTotal' => count($countDataTotal),
+			'recordsFiltered' => count($countData),
+			'data' => $allData,
+		);
+		echo json_encode($data);
 	}
 
 
