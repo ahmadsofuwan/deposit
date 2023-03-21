@@ -246,16 +246,7 @@ class Admin extends MY_Controller
 			$json_data = json_encode($limit);
 			file_put_contents($file_path, $json_data);
 		}
-		$limit = json_decode(file_get_contents($file_path))->limit;
-
-
-
-
-
-
-
-
-
+		$limit = json_decode(file_get_contents($file_path))->limit; //limit dari file config
 
 
 		$tableName = 'deposit_transaction';
