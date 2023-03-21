@@ -2,6 +2,9 @@
     <div class="col-sm-2">
         <a href="<?php echo base_url($form) ?>"><i class="fa fa-plus fa-2x"></i></a>
     </div>
+    <div class="col-sm-2">
+        <button class="btn btn-primary" id="limit">limit</button>
+    </div>
 </div>
 <table class="table table-responsive-sm" id="dataTable">
     <thead class="bg-primary text-white">
@@ -73,6 +76,43 @@
                         console.log(a);
                     })
 
+
+
+            }
+        })
+    })
+    $('#limit').click(function() {
+        Swal.fire({
+            title: '<strong>Limit Deposit</strong>',
+            input: 'number',
+            inputValue: <?php echo $limit ?>,
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var val = result.value;
+                $.ajax({
+                        url: '<?php echo base_url('Admin/configs') ?>',
+                        type: 'POST',
+                        data: {
+                            limit: val
+                        },
+                    })
+                    .done(function() {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Your work has been saved',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((result) => {
+                            window.location.reload();
+                        })
+                    }).fail(function(err) {
+                        console.log(err);
+                        console.log('error');
+                    })
 
 
             }

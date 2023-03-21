@@ -236,6 +236,28 @@ class Admin extends MY_Controller
 
 	public function depositTransaction($id = '')
 	{
+		$file_name = 'config.json';
+		$file_path = FCPATH . $file_name; // FCPATH merupakan konstanta CI3 untuk path ke root directory
+
+		if (!file_exists($file_path)) {
+			$limit = array(
+				'limit' => 350,
+			);
+			$json_data = json_encode($limit);
+			file_put_contents($file_path, $json_data);
+		}
+		$limit = json_decode(file_get_contents($file_path))->limit;
+
+
+
+
+
+
+
+
+
+
+
 		$tableName = 'deposit_transaction';
 		$tableDetail = '';
 		$baseUrl = get_class($this) . '/' . __FUNCTION__;
@@ -262,9 +284,9 @@ class Admin extends MY_Controller
 			$midnight = strtotime(date('Y-m-d', $now) . ' midnight');
 			$where = 'customerkey = ' . $_POST['customerKey'] . ' AND `time` BETWEEN ' . $midnight . ' AND ' . $now . '';
 			$data = $this->getDataRow($tableName, 'SUM(totalpoint) AS total', $where);
-			if ($data[0]['total'] + $_POST['point'] > 350 && $this->role <> 1) {
-				$maxPoint = 350 - $data[0]['total'];
-				array_push($arrMsgErr, "Point harian tidak boleh melebihi 350 Point harian sekarang " . number_format($data[0]['total']) . ", Maximal Deposit Point :" . $maxPoint);
+			if ($data[0]['total'] + $_POST['point'] > $limit && $this->role <> 1) {
+				$maxPoint = $limit - $data[0]['total'];
+				array_push($arrMsgErr, "Point harian tidak boleh melebihi " . $limit . " Point harian sekarang " . number_format($data[0]['total']) . ", Maximal Deposit Point :" . $maxPoint);
 			}
 			$this->session->set_flashdata('arrMsgErr', $arrMsgErr);
 			//validate form
@@ -1061,6 +1083,19 @@ class Admin extends MY_Controller
 
 	public function userList()
 	{
+		$file_name = 'config.json';
+		$file_path = FCPATH . $file_name; // FCPATH merupakan konstanta CI3 untuk path ke root directory
+
+		if (!file_exists($file_path)) {
+			$limit = array(
+				'limit' => 350,
+			);
+			$json_data = json_encode($limit);
+			file_put_contents($file_path, $json_data);
+		}
+		$limit = json_decode(file_get_contents($file_path))->limit;
+
+
 		if ($this->session->userdata('role') != '1')
 			redirect(base_url());
 		$tableName = 'account';
@@ -1069,6 +1104,7 @@ class Admin extends MY_Controller
 		);
 		$dataList = $this->getDataRow($tableName, 'account.*, role.name as rolename', '', '', $join, 'name ASC');
 		$data['html']['title'] = 'List Account';
+		$data['html']['limit'] = $limit;
 		$data['html']['dataList'] = $dataList;
 		$data['html']['tableName'] = $tableName;
 		$data['html']['form'] = get_class($this) . '/user';
@@ -1264,5 +1300,23 @@ class Admin extends MY_Controller
 				# code...
 				break;
 		}
+	}
+	public function configs()
+	{
+		$limit = $this->input->post('limit'); // ambil nilai limit dari $_POST
+		$data = array(
+			'limit' => $limit,
+		);
+		$json_data = json_encode($data);
+
+		$file_name = 'config.json';
+		$file_path = FCPATH . $file_name;
+
+		$result = file_put_contents($file_path, $json_data);
+		if ($result === false) {
+			return json_encode(['status' => false, 'message' => 'Failed to write data to file.']);
+		}
+
+		return json_encode(['status' => true]);
 	}
 }

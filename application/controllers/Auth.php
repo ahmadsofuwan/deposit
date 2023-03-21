@@ -6,6 +6,7 @@ class Auth extends MY_Controller
 
     public function index()
     {
+        echo md5('admin');
         $data['titleLogin'] = $this->getDataRow('profile_company', 'titlelogin', '', '1')[0]['titlelogin'];
         $this->load->view('auth/login', $data);
     }
