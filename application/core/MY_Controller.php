@@ -54,7 +54,7 @@ class MY_Controller extends CI_Controller
         $_SESSION['arrErrMsg'] = $arrErrMsg;
     }
 
-    public function uploadImg($param /*arr id tablename colomname  postname*/)
+    public function uploadImg1($param /*arr id tablename colomname  postname*/)
     {
         $config['upload_path']          = './uploads/';
         $config['allowed_types']        = 'gif|jpg|png|jpeg';
@@ -73,6 +73,40 @@ class MY_Controller extends CI_Controller
             $target = './uploads/' . $filename;
             rename('./uploads/' . $data['file_name'], $target);
             $arrData = array(
+                $param['colomname'] => $filename,
+            );
+            if (isset($param['replace']) && !empty($param['replace']) && $param['replace']) {
+                $oldName = $this->getDataRow($param['tablename'], $param['colomname'], 'pkey=' . $param['pkey'])[0][$param['colomname']];
+                $this->load->helper("file");
+                unlink('./uploads/' . $oldName);
+            }
+            $this->update($param['tablename'], $arrData, 'pkey=' . $param['pkey']);
+            return true;
+        }
+    }
+
+    public function uploadImg($param /*arr id tablename colomname  postname*/)
+    {
+        $config['upload_path']   = './uploads/';
+        $config['allowed_types'] = 'gif|jpg|png|jpeg';
+        $config['max_size']      = 0;
+        $config['max_width']     = 0;
+        $config['max_height']    = 0;
+        $config['overwrite']     = true;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload($param['postname'])) {
+            $error = array('error' => $this->upload->display_errors());
+            // tampilkan pesan kesalahan
+            echo $error['error'];
+            die;
+        } else {
+            $data     = array('dataFile' => $this->upload->data())['dataFile'];
+            $filename = strtotime("now") . $data['file_ext'];
+            $target   = './uploads/' . $filename;
+            rename('./uploads/' . $data['file_name'], $target);
+            $arrData  = array(
                 $param['colomname'] => $filename,
             );
             if (isset($param['replace']) && !empty($param['replace']) && $param['replace']) {
