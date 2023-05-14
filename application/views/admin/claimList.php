@@ -31,7 +31,9 @@
                 <td><?php echo $value['createname'] . ' | ' . $value['rolename'] ?></td>
                 <td style="width: 140px;">
                     <a href="<?php echo base_url($form . '/' . $value['pkey']) ?>" class="btn btn-primary">Edit</a>
-                    <button class="btn btn-danger" name="delete" data='<?php echo $tableName ?>' value="<?php echo $value['pkey'] ?>">Delete</button>
+                    <?php if ($role == '1') { ?>
+                        <button class="btn btn-danger" name="delete" data='<?php echo $tableName ?>' value="<?php echo $value['pkey'] ?>">Delete</button>
+                    <?php } ?>
                 </td>
             </tr>
         <?php } ?>
