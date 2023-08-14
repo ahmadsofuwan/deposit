@@ -882,6 +882,7 @@ class Admin extends MY_Controller
 		$data['html']['title'] = 'List Calaim';
 		$data['html']['dataList'] = $dataList;
 		$data['html']['tableName'] = $tableName;
+		$data['html']['role'] = $this->role;
 		$data['html']['form'] = get_class($this) . '/claim';
 		$data['url'] = 'admin/claimList';
 		$this->template($data);
